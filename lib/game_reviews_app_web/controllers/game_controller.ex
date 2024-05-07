@@ -7,6 +7,7 @@ defmodule GameReviewsAppWeb.GameController do
   action_fallback GameReviewsAppWeb.FallbackController
 
   def index(conn, _params) do
+    # raise GameReviewsApp.PlugException, plug_status: 403, message: "You're not allowed!"
     games = Games.list_games()
     render(conn, :index, games: games)
   end
@@ -21,7 +22,8 @@ defmodule GameReviewsAppWeb.GameController do
   end
 
   def show(conn, %{"id" => id}) do
-    game = Games.get_game!(id)
+    # game = Games.get_game!(id)
+    game = Games.get_game_with_reviews(id)
     render(conn, :show, game: game)
   end
 

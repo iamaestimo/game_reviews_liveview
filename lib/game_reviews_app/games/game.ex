@@ -7,6 +7,8 @@ defmodule GameReviewsApp.Games.Game do
     field :publisher, :string
     field :genre, :string
 
+    has_many :reviews, GameReviewsApp.Reviews.Review
+
     timestamps(type: :utc_datetime)
   end
 

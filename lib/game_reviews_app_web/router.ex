@@ -25,7 +25,9 @@ defmodule GameReviewsAppWeb.Router do
   scope "/api", GameReviewsAppWeb do
     pipe_through :api
 
-    resources "/games", GameController, except: [:new, :edit]
+    resources "/games", GameController, except: [:new, :edit] do
+      resources "/reviews", ReviewController, except: [:new, :edit]
+    end
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

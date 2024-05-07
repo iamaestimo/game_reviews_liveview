@@ -37,6 +37,8 @@ defmodule GameReviewsApp.Games do
   """
   def get_game!(id), do: Repo.get!(Game, id)
 
+  def get_game_with_reviews(id), do: Repo.get(Game, id) |> Repo.preload([:reviews])
+
   @doc """
   Creates a game.
 
