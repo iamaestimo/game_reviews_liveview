@@ -7,8 +7,8 @@ defmodule GameReviewsAppWeb.GameController do
   action_fallback GameReviewsAppWeb.FallbackController
 
   def index(conn, _params) do
-    # raise GameReviewsApp.PlugException, plug_status: 403, message: "You're not allowed!"
     games = Games.list_games()
+
     render(conn, :index, games: games)
   end
 
@@ -22,8 +22,8 @@ defmodule GameReviewsAppWeb.GameController do
   end
 
   def show(conn, %{"id" => id}) do
-    # game = Games.get_game!(id)
     game = Games.get_game_with_reviews(id)
+    am_i_slow()
     render(conn, :show, game: game)
   end
 
@@ -41,5 +41,11 @@ defmodule GameReviewsAppWeb.GameController do
     with {:ok, %Game{}} <- Games.delete_game(game) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  defp am_i_slow do
+    Appsignal.instrument("Check if am slow", fn ->
+      :timer.sleep(1000)
+    end)
   end
 end
