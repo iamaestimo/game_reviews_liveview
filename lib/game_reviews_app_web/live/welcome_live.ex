@@ -1,10 +1,12 @@
 defmodule GameReviewsAppWeb.WelcomeLive do
   use GameReviewsAppWeb, :live_view
 
+  # use Appsignal.Instrumentation.Decorators
+
   import Appsignal.Phoenix.LiveView, only: [instrument: 4]
 
   def mount(_params, _session, socket) do
-    instrument(__MODULE__, "timer instrumentation", socket, fn ->
+    instrument(__MODULE__, "Liveview instrumentation", socket, fn ->
       :timer.send_interval(1000, self(), :tick)
       {
         :ok,

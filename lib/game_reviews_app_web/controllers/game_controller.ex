@@ -1,16 +1,27 @@
 defmodule GameReviewsAppWeb.GameController do
   use GameReviewsAppWeb, :controller
 
+  use Appsignal.Instrumentation.Decorators
+
   alias GameReviewsApp.Games
   alias GameReviewsApp.Games.Game
 
   action_fallback GameReviewsAppWeb.FallbackController
 
+  # def index(conn, _params) do
+  #   games = Games.list_games()
+  #   super_slow()
+  #   render(conn, :index, games: games)
+  # end
+
   def index(conn, _params) do
-    games = Games.list_games()
+    games = Appsignal.instrument("Fetch games", fn ->
+      Games.list_games()
+    end)
 
     render(conn, :index, games: games)
   end
+
 
   def create(conn, %{"game" => game_params}) do
     with {:ok, %Game{} = game} <- Games.create_game(game_params) do
@@ -22,8 +33,8 @@ defmodule GameReviewsAppWeb.GameController do
   end
 
   def show(conn, %{"id" => id}) do
-    game = Games.get_game_with_reviews(id)
     am_i_slow()
+    game = Games.get_game_with_reviews(id)
     render(conn, :show, game: game)
   end
 
@@ -43,9 +54,13 @@ defmodule GameReviewsAppWeb.GameController do
     end
   end
 
+  # @decorate transaction_event()
+  # defp super_slow do
+  #   :timer.sleep(1000)
+  # end
+
+  @decorate transaction_event()
   defp am_i_slow do
-    Appsignal.instrument("Check if am slow", fn ->
-      :timer.sleep(1000)
-    end)
+    :timer.sleep(1000)
   end
 end
